@@ -1,0 +1,14 @@
+{
+    "name": "@isaacadams/inpm",
+    "version": "1.0.0",
+    "preferGlobal": true,
+    "bin": {
+        "inpm": "./inpm.js"
+    },
+    "scripts": {
+        "test": "node inpm.js -g npm rimraf@1.0.0 parcel-bundler typescript"
+    },
+    "dependencies": {
+        "npm": "^6.14.8"
+    }
+}
