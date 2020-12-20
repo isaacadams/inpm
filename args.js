@@ -1,30 +1,48 @@
 let config = require('./configureFlags');
 
-let flags = config.flags.reduce((p, c) => ({
+let flags = config.reduce((p, c) => ({
     ...p,
     [c.name]: c.defaultValue,
 }), {});
 
 let inputs = [];
-process.argv.slice(2).forEach((a, i) => {
 
-    if(a.startsWith('-')) {
-        parseFlag(a);
-        return;
-    }
+function parseArguments() {
+    process.argv.slice(2).forEach((a, i) => {
 
-    inputs.push(a);
-});
-
-function parseFlag(flag) {
-    config.flags.forEach(f => {
-        if([f.short, f.long].includes(flag)) flags[f.name] = !f.defaultValue;
+        if(a.startsWith('-')) {
+            parseFlag(a);
+            return;
+        }
+    
+        inputs.push(a);
     });
+    
+    function parseFlag(flag) {
+        config.forEach(f => {
+            if([f.short, f.long].includes(flag)) flags[f.name] = !f.defaultValue;
+        });
+    }
 }
+
+parseArguments();
 
 if (flags.showFlags) console.log(flags);
 
+function showHelp() {
+    let columns = config.map(f => {
+        return {
+            first: `${f.short}, ${f.long}`,
+            second: f.description
+        };
+    });
+    let numOfSpaces = Math.max(...columns.map(c => c.first.length));
+    let help = columns.map(c => `${c.first.padEnd(numOfSpaces)}   ${c.second}`).join('\n');
+    console.log(help);
+}
+
 module.exports = {
     flags,
-    arguments: inputs
+    arguments: inputs,
+    showHelp
 };

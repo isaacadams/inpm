@@ -4,6 +4,11 @@ const args = require('./args'),
     npmWrapper = require('./npmWrapper'),
     logger = require('./logger');
 
+if(args.arguments.length < 1 || args.flags.help) {
+    args.showHelp();
+    return;
+}
+
 npmWrapper()
     .then(pm => checkIfPackageExists(pm))
     .catch(console.log);
