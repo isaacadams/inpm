@@ -1,9 +1,9 @@
-let flags = {
-    global: false,
-    installMissing: false,
-    verbose: true,
-    showFlags: false,
-};
+let config = require('./configureFlags');
+
+let flags = config.flags.reduce((p, c) => ({
+    ...p,
+    [c.name]: c.defaultValue,
+}), {});
 
 let inputs = [];
 process.argv.slice(2).forEach((a, i) => {
@@ -17,10 +17,9 @@ process.argv.slice(2).forEach((a, i) => {
 });
 
 function parseFlag(flag) {
-    if(['-g', '--global'].includes(flag)) flags.global = true;
-    if(['-im', '--install-missing'].includes(flag)) flags.installMissing = true;
-    if(['-sf', '--show-flags'].includes(flag)) flags.showFlags = true;
-    if(['-q', '--quiet'].includes(flag)) flags.verbose = false;
+    config.flags.forEach(f => {
+        if([f.short, f.long].includes(flag)) flags[f.name] = !f.defaultValue;
+    });
 }
 
 if (flags.showFlags) console.log(flags);
